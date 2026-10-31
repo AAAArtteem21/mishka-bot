@@ -1,4 +1,4 @@
-"""chunk needs_clarification (restored)
+"""chunk needs_clarification
 
 Revision ID: 167da2c5764a
 Revises: 0001
@@ -12,9 +12,12 @@ depends_on = None
 
 
 def upgrade() -> None:
-    # Схема уже применена в базе; файл восстановлен после потери.
-    pass
+    # IF NOT EXISTS: в рабочей базе колонка уже добавлена вручную
+    op.execute(
+        "ALTER TABLE chunks "
+        "ADD COLUMN IF NOT EXISTS needs_clarification BOOLEAN NOT NULL DEFAULT false"
+    )
 
 
 def downgrade() -> None:
-    op.drop_column("chunks", "needs_clarification")
+    op.execute("ALTER TABLE chunks DROP COLUMN IF EXISTS needs_clarification")
